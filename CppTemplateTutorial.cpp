@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include <vector>
 #include <cstdint>
 
@@ -151,6 +151,62 @@ namespace _1_3
 #endif
 }
 
+namespace _2_2_2
+{
+	template <typename T> class AddFloatOrMulInt
+	{
+		static T Do(T a, T b)
+		{
+			// 在这个例子里面一般形式里面是什么内容不重要，因为用不上
+			// 这里就随便给个0吧。
+			return T(0);
+		}
+	};
+
+	// 其次，我们要指定T是int时候的代码，这就是特化：
+	template <> class AddFloatOrMulInt<int>
+	{
+	public:
+		static int Do(int a, int b)
+		{
+			return a * b;
+		}
+	};
+
+	// 再次，我们要指定T是float时候的代码：
+	template <> class AddFloatOrMulInt<float>
+	{
+	public:
+		static float Do(float a, float b)
+		{
+			return a * b;
+		}
+	};
+
+	void foo()
+	{
+		float a(0), b(1);
+		float c = AddFloatOrMulInt<float>::Do(a, b);
+	}
+}
+
+namespace _2_2_3
+{
+	template <typename T> class TypeToID
+	{
+	public:
+		static int const ID = -1;
+	};
+
+	class B {};
+
+	template <> class TypeToID<void ()>;						// 函数的TypeID
+	template <> class TypeToID<int[3]>;							// 数组的TypeID
+	template <> class TypeToID<int (int[3])>;					// 这是以数组为参数的函数的TypeID
+	template <> class TypeToID<int (B::*[3])(void*, float[2])>;	// 我也不知道这是什么了，自己看着办吧。
+
+	template <> class TypeToID<int const * volatile * const volatile>;
+}
 // 1.4 Specialization, Partial Specialization, Full Specialization
 namespace _1_4
 {
